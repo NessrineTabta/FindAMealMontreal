@@ -1,24 +1,21 @@
-import logo from './Autre/logo.svg';
-import './Css/App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Accueil from "./Composants/Accueil"; // Assurez-vous que le chemin d'importation est correct
+import logo from './Autre/logo.svg'; // Importation du logo
+import './Css/App.css'; // Importation des styles CSS
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+
+
+        {/* Routes de l'application */}
+        <Routes>
+          <Route path="/" element={<Accueil />} /> {/* Affiche la page d'accueil (avec la carte) à la racine */}
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
