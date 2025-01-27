@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css';
 import '../Css/Accueil.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Composant pour effectuer le zoom sur la carte
 const CenterMap = ({ position }) => {
   const map = useMap();
 
@@ -24,53 +23,49 @@ const Accueil = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
-  const [selectedRestaurantPosition, setSelectedRestaurantPosition] = useState(null); // Nouvelle state pour la position sélectionnée
-  const [selectedRestaurantReviews, setSelectedRestaurantReviews] = useState([]); // State pour les avis du restaurant
-  const [selectedRestaurantRating, setSelectedRestaurantRating] = useState(null); // State pour la note du restaurant
-  const [restaurantTypeFilter, setRestaurantTypeFilter] = useState(''); // State pour le filtre par type de restaurant
-  const [apiKey] = useState('BomU7l-lOo83v47WpThd7TP-z6yIfgGc_IVNKd3znD0t7APSalwMwbHU2yspZyq_7CdwG--85KY-Uh25STZS8fTZQg0sy6AGPadioR3GKQLxj7jy_3Sa27EPxPyXZ3Yx'); // Stocker la clé API une seule fois ici
+  const [selectedRestaurantPosition, setSelectedRestaurantPosition] = useState(null);
+  const [selectedRestaurantReviews, setSelectedRestaurantReviews] = useState([]);
+  const [selectedRestaurantRating, setSelectedRestaurantRating] = useState(null);
+  const [restaurantTypeFilter, setRestaurantTypeFilter] = useState('');
+  const [apiKey] = useState('BomU7l-lOo83v47WpThd7TP-z6yIfgGc_IVNKd3znD0t7APSalwMwbHU2yspZyq_7CdwG--85KY-Uh25STZS8fTZQg0sy6AGPadioR3GKQLxj7jy_3Sa27EPxPyXZ3Yx');
+  const [currentPage, setCurrentPage] = useState(1); // Page courante des avis
+  const [reviewsPerPage] = useState(5); // Nombre d'avis par page
+  const [restaurantPhoto, setRestaurantPhoto] = useState(null); // Photo du restaurant
 
   useEffect(() => {
-    // Fonction pour obtenir les restaurants de Montréal
     const fetchRestaurants = async () => {
       const url = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="restaurant"](45.4017,-73.7173,45.6017,-73.4673););out body;`;
       const response = await fetch(url);
       const data = await response.json();
       const venues = data.elements;
       setRestaurants(venues);
-      setFilteredRestaurants(venues); // Affiche tous les restaurants sur la carte
+      setFilteredRestaurants(venues);
     };
     fetchRestaurants();
   }, []);
 
-  // Fonction de recherche de restaurants
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    // Si l'utilisateur tape plus de 3 caractères, on filtre les restaurants
     if (query.length >= 3) {
       const results = restaurants.filter((restaurant) =>
         restaurant.tags && restaurant.tags.name && restaurant.tags.name.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredRestaurants(results);
-      setAutocompleteResults(results.slice(0, 5));  // Affiche les 5 premiers résultats pour l'autocomplétion
+      setAutocompleteResults(results.slice(0, 5));
     } else {
-      // Si la recherche est vide ou trop courte, on vide l'autocomplétion
       setAutocompleteResults([]);
     }
   };
 
-  // Fonction pour récupérer les restaurants aléatoires de Montréal lorsque l'utilisateur survole la barre de recherche
   const handleMouseOverSearch = () => {
     if (!searchQuery) {
-      // Si la barre de recherche est vide, afficher des restaurants aléatoires de Montréal
-      const randomRestaurants = restaurants.slice(0, 5); // Affiche les 5 premiers restaurants aléatoires
+      const randomRestaurants = restaurants.slice(0, 5);
       setAutocompleteResults(randomRestaurants);
     }
   };
 
-  // Fonction pour la géolocalisation
   const handleGeolocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -82,7 +77,6 @@ const Accueil = () => {
     }
   };
 
-  // Fonction pour rechercher les avis d'un restaurant
   const fetchRestaurantReviews = async (restaurantId) => {
     const url = `https://api.yelp.com/v3/businesses/${restaurantId}/reviews`;
     const response = await fetch(url, {
@@ -94,35 +88,32 @@ const Accueil = () => {
     setSelectedRestaurantReviews(data.reviews);
   };
 
-  // Fonction pour rechercher un restaurant sur Yelp
-  const handleRestaurantClick = (restaurant) => {
-    setSelectedRestaurantPosition([restaurant.lat, restaurant.lon]);
+  const fetchRestaurantDetails = async (restaurantName) => {
+    const searchUrl = `https://api.yelp.com/v3/businesses/search?term=${restaurantName}&location=Montreal`;
+    const response = await fetch(searchUrl, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+      },
+    });
+    const data = await response.json();
+    const business = data.businesses[0]; // Assurer qu'il y a des résultats
 
-    const fetchBusinessId = async () => {
-      const searchUrl = `https://api.yelp.com/v3/businesses/search?term=${restaurant.tags.name}&location=Montreal`;
-      const response = await fetch(searchUrl, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-        },
-      });
-      const data = await response.json();
-
-      // Récupérer l'ID du restaurant trouvé et récupérer ses avis
-      const business = data.businesses[0]; // Assurer qu'il y a des résultats
-      if (business) {
-        setSelectedRestaurantRating(business.rating);
-        fetchRestaurantReviews(business.id);
-      }
-    };
-    fetchBusinessId();
+    if (business) {
+      setSelectedRestaurantRating(business.rating);
+      setRestaurantPhoto(business.image_url); // Set restaurant's photo
+      fetchRestaurantReviews(business.id);
+    }
   };
 
-  // Fonction de filtre par type de restaurant
+  const handleRestaurantClick = (restaurant) => {
+    setSelectedRestaurantPosition([restaurant.lat, restaurant.lon]);
+    fetchRestaurantDetails(restaurant.tags.name);
+  };
+
   const handleTypeFilterChange = (e) => {
     const filter = e.target.value;
     setRestaurantTypeFilter(filter);
 
-    // Filtrer les restaurants en fonction du type
     const filtered = restaurants.filter((restaurant) => {
       if (restaurant.tags && restaurant.tags.name) {
         return restaurant.tags.name.toLowerCase().includes(filter.toLowerCase());
@@ -132,6 +123,11 @@ const Accueil = () => {
     setFilteredRestaurants(filtered);
   };
 
+  const handlePaginationChange = (direction) => {
+    const newPage = direction === 'next' ? currentPage + 1 : currentPage - 1;
+    setCurrentPage(newPage);
+  };
+
   const customIcon = new L.Icon({
     iconUrl: 'https://cdn.pixabay.com/photo/2014/04/03/10/03/google-309740_1280.png',
     iconSize: [32, 32],
@@ -139,10 +135,14 @@ const Accueil = () => {
     popupAnchor: [0, -32],
   });
 
+  const paginatedReviews = selectedRestaurantReviews.slice(
+    (currentPage - 1) * reviewsPerPage,
+    currentPage * reviewsPerPage
+  );
+
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Colonne de recherche à gauche */}
         <div className="col-md-4 p-4">
           <h1 className="mb-4">Restaurant Finder à Montréal</h1>
 
@@ -154,7 +154,7 @@ const Accueil = () => {
             placeholder="Rechercher une adresse"
             value={searchQuery}
             onChange={handleSearchChange}
-            onMouseOver={handleMouseOverSearch} // Ajout du survol pour des suggestions aléatoires
+            onMouseOver={handleMouseOverSearch}
           />
 
           {autocompleteResults.length > 0 && (
@@ -163,7 +163,7 @@ const Accueil = () => {
                 <li
                   key={index}
                   className="list-group-item list-group-item-action"
-                  onClick={() => handleRestaurantClick(result)} // Zoom sur le restaurant sélectionné
+                  onClick={() => handleRestaurantClick(result)}
                 >
                   {result.tags.name}
                 </li>
@@ -171,7 +171,6 @@ const Accueil = () => {
             </ul>
           )}
 
-          {/* Filtre par type de restaurant */}
           <div className="mt-3">
             <label htmlFor="restaurantType" className="form-label">Filtrer par type de restaurant:</label>
             <input
@@ -180,12 +179,11 @@ const Accueil = () => {
               className="form-control"
               placeholder="Ex: Pizza"
               value={restaurantTypeFilter}
-              onChange={handleTypeFilterChange} // Mise à jour du filtre
+              onChange={handleTypeFilterChange}
             />
           </div>
         </div>
 
-        {/* Colonne de la carte à droite */}
         <div className="col-md-8">
           <MapContainer center={userLocation} zoom={11} style={{ width: '100%', height: '935px' }} scrollWheelZoom={true} dragging={false}>
             <TileLayer
@@ -200,22 +198,49 @@ const Accueil = () => {
                 position={[restaurant.lat, restaurant.lon]}
                 icon={customIcon}
                 eventHandlers={{
-                  click: () => handleRestaurantClick(restaurant), // Zoom sur le restaurant sélectionné
+                  click: () => handleRestaurantClick(restaurant),
                 }}
               >
                 <Popup>
                   <div>
                     <h5>{restaurant.tags.name || 'Restaurant sans nom'}</h5>
-                    {/* Affichage de la note et des avis du restaurant */}
+                    {restaurantPhoto && (
+                      <img src={restaurantPhoto} alt="Restaurant" style={{ width: '100%', height: 'auto' }} />
+                    )}
                     {selectedRestaurantRating && (
                       <p><strong>Note:</strong> {selectedRestaurantRating}</p>
                     )}
                     {selectedRestaurantReviews.length > 0 ? (
                       <div>
                         <h6>Avis:</h6>
-                        {selectedRestaurantReviews.map((review, idx) => (
-                          <p key={idx}><strong>{review.user.name}:</strong> {review.text}</p>
+                        {paginatedReviews.map((review, idx) => (
+                          <div key={idx}>
+                            <div className="d-flex align-items-center">
+                              {review.user.image_url && (
+                                <img src={review.user.image_url} alt={review.user.name} style={{ width: 30, height: 30, borderRadius: '50%' }} />
+                              )}
+                              <strong>{review.user.name}:</strong>
+                            </div>
+                            <p>{review.text}</p>
+                          </div>
                         ))}
+                        {selectedRestaurantReviews.length > reviewsPerPage && (
+                          <div className="pagination">
+                            <button
+                              onClick={() => handlePaginationChange('prev')}
+                              disabled={currentPage === 1}
+                            >
+                              Précédent
+                            </button>
+                            <span>Page {currentPage}</span>
+                            <button
+                              onClick={() => handlePaginationChange('next')}
+                              disabled={currentPage * reviewsPerPage >= selectedRestaurantReviews.length}
+                            >
+                              Suivant
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <p>Aucun avis disponible.</p>
