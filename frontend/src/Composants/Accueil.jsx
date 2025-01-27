@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Accueil = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [userLocation, setUserLocation] = useState([45.5017, -73.5673]);
+  const [userLocation, setUserLocation] = useState([45.5017, -73.5673]); // Montréal par défaut
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
@@ -41,7 +41,7 @@ const Accueil = () => {
 
   const fetchAutocompleteResults = async (query) => {
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5`);
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query},Montreal&format=json&addressdetails=1&limit=5`);
       const data = await response.json();
       setAutocompleteResults(data);
     } catch (error) {
@@ -112,7 +112,7 @@ const Accueil = () => {
 
         {/* Colonne de la carte à droite */}
         <div className="col-md-8">
-          <MapContainer center={userLocation} zoom={13} style={{ width: '100%', height: '935px' }}>
+          <MapContainer center={userLocation} zoom={11} style={{ width: '100%', height: '935px' }} scrollWheelZoom={true} dragging={false}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
