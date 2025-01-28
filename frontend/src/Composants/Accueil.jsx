@@ -163,6 +163,9 @@ const Accueil = () => {
               <li className="nav-item">
                 <Link className="nav-link" to="/profile">👤 Mon Profil</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/contactus">👤 Contactez Nous</Link>
+              </li>
             </ul>
           </div>
         </div>

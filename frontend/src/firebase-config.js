@@ -25,4 +25,4 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { db, app }; // ✅ Export `db` and `app`
+export { db, app }; 
