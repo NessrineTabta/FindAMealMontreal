@@ -1,0 +1,255 @@
+/* Full-page futuristic background */
+body {
+  background: radial-gradient(circle at center, #1a1a2e, #16213e, #0f3460);
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  color: white;
+}
+
+/* Profile Container */
+.profile-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Sidebar (Futuristic Panel) */
+.profile-sidebar {
+  width: 100%;
+  max-width: 350px;
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  cursor: pointer;
+  transition: transform 0.5s ease-in-out;
+  position: relative;
+  border-right: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Avatar with Hologram Glow */
+.avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid white;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.1);
+}
+
+.avatar-glow {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.4);
+  z-index: 1;
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Holographic Lines */
+.hologram {
+  position: absolute;
+  bottom: 10px;
+  width: 80%;
+  height: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.holo-line {
+  width: 30%;
+  height: 3px;
+  background: white;
+  opacity: 0.5;
+  animation: flicker 1.2s infinite alternate;
+}
+
+.holo-line:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.holo-line:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.3; transform: scaleX(1); }
+  100% { opacity: 1; transform: scaleX(1.2); }
+}
+
+/* Full-Screen Details Panel */
+.profile-details {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 50px;
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  transition: right 0.5s ease-in-out;
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Expand Animation */
+.profile-container.expanded .profile-details {
+  right: 0;
+}
+
+/* Hide Sidebar when expanded */
+.profile-container.expanded .profile-sidebar {
+  transform: translateX(-100%);
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.close-btn:hover {
+  color: #ff512f;
+}
+
+/* Title Glow Effect */
+.title-glow {
+  font-size: 26px;
+  text-align: center;
+  color: cyan;
+  text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 30px cyan;
+  animation: flickerGlow 1.5s infinite alternate;
+}
+
+@keyframes flickerGlow {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Modify Page */
+.modify-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  padding-top: 40px;
+}
+
+/* Input Fields */
+.input-group {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+}
+
+.neon-input {
+  width: 220px;
+  padding: 10px;
+  font-size: 18px;
+  color: cyan;
+  background: transparent;
+  border: 2px solid cyan;
+  outline: none;
+  border-radius: 5px;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.neon-input:focus {
+  box-shadow: 0 0 10px cyan, 0 0 20px cyan;
+  background: rgba(0, 255, 255, 0.1);
+}
+
+/* Upload Section */
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.upload-btn {
+  padding: 8px 15px;
+  border: 2px solid cyan;
+  color: cyan;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.upload-btn:hover {
+  background: cyan;
+  color: black;
+  box-shadow: 0 0 10px cyan, 0 0 20px cyan;
+}
+
+/* Image Preview */
+.image-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid cyan;
+  margin-top: 10px;
+  box-shadow: 0 0 10px cyan, 0 0 20px cyan;
+}
+
+/* Modify & Save Buttons */
+.edit-btn, .save-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid cyan;
+  background: transparent;
+  color: cyan;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  border-radius: 5px;
+}
+
+.edit-btn:hover, .save-btn:hover {
+  background: cyan;
+  color: black;
+  box-shadow: 0 0 10px cyan, 0 0 20px cyan;
+}

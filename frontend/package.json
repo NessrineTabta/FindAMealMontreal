@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cra-template": "1.2.0",
+    "firebase": "^11.2.0",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^3.1.0",
     "mapbox-gl": "^3.9.4",
