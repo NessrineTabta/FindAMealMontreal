@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../src/firebase-config";
-import "../src/Css/Profile.css";
+import { db } from "../config/firebase-config";
+import "../Css/Profile.css";
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);

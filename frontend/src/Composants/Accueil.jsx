@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import '../Css/Accueil.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+const apiKey = process.env.REACT_APP_API_KEY;
 
 const CenterMap = ({ position }) => {
   const map = useMap();
@@ -28,7 +29,6 @@ const Accueil = () => {
   const [selectedRestaurantReviews, setSelectedRestaurantReviews] = useState([]);
   const [selectedRestaurantRating, setSelectedRestaurantRating] = useState(null);
   const [restaurantTypeFilter, setRestaurantTypeFilter] = useState('');
-  const [apiKey] = useState('YOUR_API_KEY');
   const [currentPage, setCurrentPage] = useState(1); // Page courante des avis
   const [reviewsPerPage] = useState(5); // Nombre d'avis par page
   const [restaurantPhoto, setRestaurantPhoto] = useState(null); // Photo du restaurant

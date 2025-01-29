@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../src/firebase-config";
+import { db } from "../config/firebase-config";
 import { useNavigate } from "react-router-dom"; // ✅ Hook for navigation
-import "../src/Css/ContactUs.css";
+import "../Css/ContactUs.css";
 
 const ContactUs = () => {
   const navigate = useNavigate(); // ✅ Hook for navigation

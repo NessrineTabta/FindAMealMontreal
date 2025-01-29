@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import de React Router
-import Accueil from "./Composants/Accueil"; // Importation de ton composant Accueil
-import './Css/App.css'; // Importation des styles CSS
-import Profile from "./Profile";
-import ContactUs from "./ContactUs";
+import Accueil from "../Composants/Accueil"; // Importation de ton composant Accueil
+import '../Css/App.css'; // Importation des styles CSS
+import Profile from "../Composants/Profile";
+import ContactUs from "../Composants/ContactUs";
+
 
 function App() {
   return (

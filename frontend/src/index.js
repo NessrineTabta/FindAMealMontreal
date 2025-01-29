@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './Css/index.css';
-import App from './App';
+import App from './Composants/App';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import reportWebVitals from './Autre/reportWebVitals';
 
