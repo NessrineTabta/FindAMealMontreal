@@ -33,6 +33,7 @@ const Accueil = () => {
   const [reviewsPerPage] = useState(5); // Nombre d'avis par page
   const [restaurantPhoto, setRestaurantPhoto] = useState(null); // Photo du restaurant
 
+  //filtrer les restaurants 
   useEffect(() => {
     const fetchRestaurants = async () => {
       const url = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="restaurant"](45.4017,-73.7173,45.6017,-73.4673););out body;`;
@@ -45,6 +46,7 @@ const Accueil = () => {
     fetchRestaurants();
   }, []);
 
+   //rechercher une adresse
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -60,6 +62,8 @@ const Accueil = () => {
     }
   };
 
+
+  //5 restaurants recommandés
   const handleMouseOverSearch = () => {
     if (!searchQuery) {
       const randomRestaurants = restaurants.slice(0, 5);
@@ -67,6 +71,7 @@ const Accueil = () => {
     }
   };
 
+  //geolocalisation : fonctionne pas
   const handleGeolocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -78,6 +83,8 @@ const Accueil = () => {
     }
   };
 
+
+  //yelp
   const fetchRestaurantReviews = async (restaurantId) => {
     const url = `https://api.yelp.com/v3/businesses/${restaurantId}/reviews`;
     const response = await fetch(url, {
@@ -89,6 +96,8 @@ const Accueil = () => {
     setSelectedRestaurantReviews(data.reviews);
   };
 
+
+  //yelp
   const fetchRestaurantDetails = async (restaurantName) => {
     const searchUrl = `https://api.yelp.com/v3/businesses/search?term=${restaurantName}&location=Montreal`;
     const response = await fetch(searchUrl, {
@@ -106,11 +115,13 @@ const Accueil = () => {
     }
   };
 
+  //quand tu clique sa zoom sur le resto
   const handleRestaurantClick = (restaurant) => {
     setSelectedRestaurantPosition([restaurant.lat, restaurant.lon]);
     fetchRestaurantDetails(restaurant.tags.name);
   };
 
+  //filtrer par nom
   const handleTypeFilterChange = (e) => {
     const filter = e.target.value;
     setRestaurantTypeFilter(filter);
@@ -124,11 +135,13 @@ const Accueil = () => {
     setFilteredRestaurants(filtered);
   };
 
+  //sert a rien car on a juste 3 avis par resto
   const handlePaginationChange = (direction) => {
     const newPage = direction === 'next' ? currentPage + 1 : currentPage - 1;
     setCurrentPage(newPage);
   };
 
+  //ICONE A CHANGER PAR LE FRONT END
   const customIcon = new L.Icon({
     iconUrl: 'https://cdn.pixabay.com/photo/2014/04/03/10/03/google-309740_1280.png',
     iconSize: [32, 32],
