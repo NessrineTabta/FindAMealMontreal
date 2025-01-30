@@ -1,0 +1,40 @@
+/* Accueil.css */
+
+/* Fond de la page */
+body {
+    background-color: #f4f4f9;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Conteneur général */
+  .accueil-container {
+    padding: 20px;
+  }
+  
+  /* Taille du texte pour le titre */
+  h1 {
+    color: #343a40;
+    font-size: 2rem;
+  }
+  
+  /* Input de recherche */
+  input[type="text"] {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+  }
+  
+  /* Liste des résultats d'autocomplétion */
+  ul.autocomplete-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  ul.autocomplete-list li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  ul.autocomplete-list li:hover {
+    background-color: #f8f9fa;
+  }
+  
