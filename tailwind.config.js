@@ -15,6 +15,7 @@ export default {
   		colors: {}
   	}
   },
+  // eslint-disable-next-line no-undef
   plugins: [require("tailwindcss-animate")],
 }
 

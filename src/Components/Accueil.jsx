@@ -3,8 +3,12 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
-import '../Css/Accueil.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { Input} from "@/components/ui/input";
+import { Button } from "@/Components/ui/button"
+import { Avatar } from '@/Components/ui/avatar';
+
+
 const apiKey = import.meta.env.VITE_API_KEY
 
 const CenterMap = ({ position }) => {
@@ -154,150 +158,168 @@ const Accueil = () => {
     currentPage * reviewsPerPage
   );
 
-  return (
-    <>
-      {/* ✅ Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">🍽️ Find A Meal</Link>
-          <button 
-            className="navbar-toggler" 
-            type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/">🏠 Accueil</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">👤 Mon Profil</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/contactus">👤 Contactez Nous</Link>
-              </li>
+return (
+  <>
+     <div className="bg-dark p-4">
+      {/* Logo and Hamburger */}
+      <div className="flex justify-between items-center">
+        <Link to="/" className="text-white text-2xl">🍽️ Find A Meal</Link>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="md:hidden text-white">
+              Menu
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="bg-white rounded-md shadow-lg">
+            <DropdownMenuItem asChild>
+              <Link to="/" className="block px-4 py-2 text-black">🏠 Accueil</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/profile" className="block px-4 py-2 text-black">👤 Mon Profil</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/contactus" className="block px-4 py-2 text-black">👤 Contactez Nous</Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Desktop Navbar */}
+      <div className="hidden md:flex justify-center space-x-8 mt-4">
+        <Link to="/" className="text-white text-lg">🏠 Accueil</Link>
+        <Link to="/profile" className="text-white text-lg">👤 Mon Profil</Link>
+        <Link to="/contactus" className="text-white text-lg">👤 Contactez Nous</Link>
+      </div>
+    </div>
+
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-4 p-4">
+          <h1 className="mb-4">Restaurant Finder à Montréal</h1>
+
+          {/* Using ShadCN Button for "Use Current Position" */}
+          <Button onClick={handleGeolocation} variant="primary" className="mb-3">
+            Utiliser ma position actuelle
+          </Button>
+
+          {/* Using ShadCN Input for search */}
+          <Input
+            type="text"
+            className="form-control mb-3"
+            placeholder="Rechercher une adresse"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onMouseOver={handleMouseOverSearch}
+          />
+
+          {autocompleteResults.length > 0 && (
+            <ul className="list-group">
+              {autocompleteResults.map((result, index) => (
+                <li
+                  key={index}
+                  className="list-group-item list-group-item-action"
+                  onClick={() => handleRestaurantClick(result)}
+                >
+                  {result.tags.name}
+                </li>
+              ))}
             </ul>
+          )}
+
+          <div className="mt-3">
+            <label htmlFor="restaurantType" className="form-label">Filtrer par type de restaurant:</label>
+            <Input
+              type="text"
+              id="restaurantType"
+              className="form-control"
+              placeholder="Ex: Pizza"
+              value={restaurantTypeFilter}
+              onChange={handleTypeFilterChange}
+            />
           </div>
         </div>
-      </nav>
 
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-4 p-4">
-            <h1 className="mb-4">Restaurant Finder à Montréal</h1>
-
-            <button onClick={handleGeolocation} className="btn btn-primary mb-3">Utiliser ma position actuelle</button>
-
-            <input
-              type="text"
-              className="form-control mb-3"
-              placeholder="Rechercher une adresse"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onMouseOver={handleMouseOverSearch}
+        <div className="col-md-8">
+          <MapContainer center={userLocation} zoom={11} style={{ width: '100%', height: '935px' }} scrollWheelZoom={true}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
+            <CenterMap position={selectedRestaurantPosition} />
 
-            {autocompleteResults.length > 0 && (
-              <ul className="list-group">
-                {autocompleteResults.map((result, index) => (
-                  <li
-                    key={index}
-                    className="list-group-item list-group-item-action"
-                    onClick={() => handleRestaurantClick(result)}
-                  >
-                    {result.tags.name}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <div className="mt-3">
-              <label htmlFor="restaurantType" className="form-label">Filtrer par type de restaurant:</label>
-              <input
-                type="text"
-                id="restaurantType"
-                className="form-control"
-                placeholder="Ex: Pizza"
-                value={restaurantTypeFilter}
-                onChange={handleTypeFilterChange}
-              />
-            </div>
-          </div>
-
-          <div className="col-md-8">
-            <MapContainer center={userLocation} zoom={11} style={{ width: '100%', height: '935px' }} scrollWheelZoom={true}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <CenterMap position={selectedRestaurantPosition} />
-
-              {filteredRestaurants.map((restaurant) => (
-                <Marker
-                  key={restaurant.id}
-                  position={[restaurant.lat, restaurant.lon]}
-                  icon={customIcon}
-                  eventHandlers={{
-                    click: () => handleRestaurantClick(restaurant),
-                  }}
-                >
-                  <Popup>
-                    <div>
-                      <h5>{restaurant.tags.name || 'Restaurant sans nom'}</h5>
-                      {restaurantPhoto && (
-                        <img src={restaurantPhoto} alt="Restaurant" style={{ width: '100%', height: 'auto' }} />
-                      )}
-                      {selectedRestaurantRating && (
-                        <p><strong>Note:</strong> {selectedRestaurantRating}</p>
-                      )}
-                      {selectedRestaurantReviews.length > 0 ? (
-                        <div>
-                          <h6>Avis:</h6>
-                          {paginatedReviews.map((review, idx) => (
-                            <div key={idx}>
-                              <div className="d-flex align-items-center">
-                                {review.user.image_url && (
-                                  <img src={review.user.image_url} alt={review.user.name} style={{ width: 30, height: 30, borderRadius: '50%' }} />
-                                )}
-                                <strong>{review.user.name}:</strong>
-                              </div>
-                              <p>{review.text}</p>
+            {filteredRestaurants.map((restaurant) => (
+              <Marker
+                key={restaurant.id}
+                position={[restaurant.lat, restaurant.lon]}
+                icon={customIcon}
+                eventHandlers={{
+                  click: () => handleRestaurantClick(restaurant),
+                }}
+              >
+                <Popup>
+                  <div>
+                    <h5>{restaurant.tags.name || 'Restaurant sans nom'}</h5>
+                    
+                    {/* ShadCN Avatar for restaurant user */}
+                    {restaurant.user && restaurant.user.image_url && (
+                      <Avatar src={restaurant.user.image_url} alt={restaurant.user.name} size="lg" />
+                    )}
+                    
+                    {restaurantPhoto && (
+                      <img src={restaurantPhoto} alt="Restaurant" style={{ width: '100%', height: 'auto' }} />
+                    )}
+                    {selectedRestaurantRating && (
+                      <p><strong>Note:</strong> {selectedRestaurantRating}</p>
+                    )}
+                    {selectedRestaurantReviews.length > 0 ? (
+                      <div>
+                        <h6>Avis:</h6>
+                        {paginatedReviews.map((review, idx) => (
+                          <div key={idx}>
+                            <div className="d-flex align-items-center">
+                              {review.user.image_url && (
+                                <img src={review.user.image_url} alt={review.user.name} style={{ width: 30, height: 30, borderRadius: '50%' }} />
+                              )}
+                              <strong>{review.user.name}:</strong>
                             </div>
-                          ))}
-                          {selectedRestaurantReviews.length > reviewsPerPage && (
-                            <div className="pagination">
-                              <button
-                                onClick={() => handlePaginationChange('prev')}
-                                disabled={currentPage === 1}
-                              >
-                                Précédent
-                              </button>
-                              <span>Page {currentPage}</span>
-                              <button
-                                onClick={() => handlePaginationChange('next')}
-                                disabled={currentPage * reviewsPerPage >= selectedRestaurantReviews.length}
-                              >
-                                Suivant
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <p>Aucun avis disponible.</p>
-                      )}
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </div>
+                            <p>{review.text}</p>
+                          </div>
+                        ))}
+                        {selectedRestaurantReviews.length > reviewsPerPage && (
+                          <div className="pagination">
+                            <button
+                              onClick={() => handlePaginationChange('prev')}
+                              disabled={currentPage === 1}
+                            >
+                              Précédent
+                            </button>
+                            <span>Page {currentPage}</span>
+                            <button
+                              onClick={() => handlePaginationChange('next')}
+                              disabled={currentPage * reviewsPerPage >= selectedRestaurantReviews.length}
+                            >
+                              Suivant
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p>Aucun avis disponible.</p>
+                    )}
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
         </div>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
+
+
 };
 
 export default Accueil;
