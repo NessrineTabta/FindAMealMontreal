@@ -198,7 +198,6 @@
 
 // export default Profile;
 
-
 import { useState } from "react";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -207,74 +206,134 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const ProfilePage = ({ userData }) => {
+const ProfilePage = ({ userData = {} }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(userData);
+  const [editedData, setEditedData] = useState({ ...userData });
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(userData.profileImage);
+  const [imageUrl, setImageUrl] = useState(userData.profileImage || "");
+  const [hasChanges, setHasChanges] = useState(false);
 
   const handleEdit = () => setIsEditing(true);
   const handleSave = () => {
     setIsEditing(false);
-    // Save logic here
+    setHasChanges(false);
   };
-  
+
   const handleInputChange = (e) => {
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
+    setHasChanges(true);
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
+      setHasChanges(true);
     }
   };
 
   return (
-    <div className="flex justify-center p-6">
-      <Card className="w-full max-w-lg shadow-lg">
-        <CardHeader className="text-center">
-          <Avatar className="mx-auto h-20 w-20">
-            <AvatarImage src={selectedImage || imageUrl} alt="User" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-          <h2 className="text-xl font-semibold mt-2">{editedData.prenom} {editedData.name}</h2>
-          <p className="text-sm text-gray-500">{editedData.email}</p>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-900 via-zinc-800 to-gray-900 text-white">
+      <Card className="w-full max-w-lg bg-opacity-90 shadow-xl backdrop-blur-lg rounded-xl border border-gray-700">
+        <CardHeader className="text-center space-y-6">
+          <div className="relative w-32 h-32 mx-auto rounded-full border-4 border-blue-500 shadow-md hover:shadow-blue-500 transition-shadow duration-300">
+            <Avatar className="w-full h-full">
+              <AvatarImage src={selectedImage || imageUrl} alt="User" className="rounded-full" />
+              <AvatarFallback className="text-3xl bg-zinc-700 text-white">
+                {editedData.name?.charAt(0) || "U"}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <h2 className="text-3xl font-bold">{editedData.prenom} {editedData.name}</h2>
+          <p className="text-md text-gray-400">{editedData.email}</p>
         </CardHeader>
-        <CardContent className="space-y-4">
+
+        <CardContent className="space-y-6">
           <div>
-            <Label>Email</Label>
-            <Input value={editedData.email} disabled className="bg-gray-100" />
+            <Label className="text-gray-300">Email</Label>
+            <Input value={editedData.email} disabled className="bg-gray-800 text-gray-300 border-none" />
           </div>
           <div>
-            <Label>First Name</Label>
-            <Input name="prenom" value={editedData.prenom} onChange={handleInputChange} disabled={!isEditing} />
+            <Label className="text-gray-300">First Name</Label>
+            <Input 
+              name="prenom" 
+              value={editedData.prenom} 
+              onChange={handleInputChange} 
+              disabled={!isEditing} 
+              className="bg-gray-800 text-gray-300 border-none"
+            />
           </div>
           <div>
-            <Label>Last Name</Label>
-            <Input name="name" value={editedData.name} onChange={handleInputChange} disabled={!isEditing} />
+            <Label className="text-gray-300">Last Name</Label>
+            <Input 
+              name="name" 
+              value={editedData.name} 
+              onChange={handleInputChange} 
+              disabled={!isEditing} 
+              className="bg-gray-800 text-gray-300 border-none"
+            />
           </div>
           <div>
-            <Label>Phone</Label>
-            <Input name="phone" value={editedData.phone} onChange={handleInputChange} disabled={!isEditing} />
+            <Label className="text-gray-300">Phone</Label>
+            <Input 
+              name="phone" 
+              value={editedData.phone} 
+              onChange={handleInputChange} 
+              disabled={!isEditing} 
+              className="bg-gray-800 text-gray-300 border-none"
+            />
           </div>
           <div>
-            <Label>Address</Label>
-            <Textarea name="address" value={editedData.address} onChange={handleInputChange} disabled={!isEditing} />
+            <Label className="text-gray-300">Address</Label>
+            <Textarea 
+              name="address" 
+              value={editedData.address} 
+              onChange={handleInputChange} 
+              disabled={!isEditing} 
+              className="bg-gray-800 text-gray-300 border-none"
+            />
           </div>
+
           {isEditing && (
-            <div>
-              <Label>Profile Image</Label>
-              <Input type="file" accept="image/*" onChange={handleImageChange} />
-              <Input type="text" placeholder="Paste image URL" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+            <div className="mt-4 space-y-3">
+              <Label className="text-gray-300">Profile Image</Label>
+              <Input type="file" accept="image/*" onChange={handleImageChange} className="text-gray-300"/>
+              <Input 
+                type="text" 
+                placeholder="Paste image URL" 
+                value={imageUrl} 
+                onChange={(e) => setImageUrl(e.target.value)} 
+                className="bg-gray-800 text-gray-300 border-none"
+              />
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex justify-end gap-2">
-          {!isEditing ? (
-            <Button onClick={handleEdit} variant="outline">Modify</Button>
+
+        <CardFooter className="flex justify-between pt-4">
+          {isEditing ? (
+            <>
+              <Button 
+                onClick={handleSave} 
+                disabled={!hasChanges} 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-transform transform hover:scale-105"
+              >
+                {hasChanges ? "Save Changes" : "No Changes"}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsEditing(false)} 
+                className="border border-gray-500 text-gray-300 px-6 py-2 rounded-lg hover:bg-gray-700 transition-transform transform hover:scale-105"
+              >
+                Cancel
+              </Button>
+            </>
           ) : (
-            <Button onClick={handleSave}>Save</Button>
+            <Button 
+              onClick={handleEdit} 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg w-full transition-transform transform hover:scale-105"
+            >
+              Modify
+            </Button>
           )}
         </CardFooter>
       </Card>
