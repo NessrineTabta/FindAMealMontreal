@@ -1,8 +1,8 @@
 import '../Css/index.css'
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import de React Router
 import Accueil from '../Components/Accueil'
-import Profile from "../Composants/Profile";
-import ContactUs from "../Composants/ContactUs";
+import Profile from "../Components/Profile";
+import ContactUs from "../Components/ContactUs";
 
 
 // function App() {

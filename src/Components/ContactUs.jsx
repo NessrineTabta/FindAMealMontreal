@@ -148,12 +148,12 @@ const formSchema = z.object({
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
-          <CardTitle>💬 Contact Us</CardTitle>
+          <CardTitle>Contact Us</CardTitle>
         </CardHeader>
         <CardContent>
           {isSubmitted ? (
             <Alert className="mb-4">
-              <AlertTitle>✅ Message Sent!</AlertTitle>
+              <AlertTitle>Message Sent!</AlertTitle>
               <AlertDescription>We will get back to you soon.</AlertDescription>
             </Alert>
           ) : (
@@ -205,7 +205,7 @@ const formSchema = z.object({
                 />
 
                 {/* Submit Button */}
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={() => navigate("/")}>
                   Send Message
                 </Button>
               </form>
@@ -214,7 +214,7 @@ const formSchema = z.object({
 
           {error && (
             <Alert variant="destructive" className="mt-4">
-              <AlertTitle>❌ Error</AlertTitle>
+              <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
