@@ -1,0 +1,3 @@
+import os
+
+FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS")
